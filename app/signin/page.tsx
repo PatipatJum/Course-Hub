@@ -41,7 +41,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen items-center justify-center bg-[#FFFAE6]">
+        <div className="flex flex-col min-h-screen items-center justify-center dark">
             <h1 className={`${agbalumo.className} text-[90px] font-extrabold text-black mb-8 drop-shadow-xl italic`}>Course Hub</h1>
             <div className="bg-black p-10 rounded-3xl shadow-2xl w-full max-w-[450px] text-center">
                 <h2 className="text-2xl font-semibold text-[#FFFAE6] italic mb-6">Sign in</h2>

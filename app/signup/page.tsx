@@ -41,7 +41,7 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="flex items-center justify-center min-h-screen dark">
             <div className="bg-gray-800 text-white p-8 rounded-lg shadow-lg w-96 text-center">
                 <h1 className="text-5xl font-bold text-orange-400">Course-hub</h1>
 
