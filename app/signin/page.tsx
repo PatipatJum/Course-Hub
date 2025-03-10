@@ -26,17 +26,17 @@ export default function LoginPage() {
             });
 
             if (result?.error) {
-                setMessage("❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+                setMessage("❌ Email or password is incorrect.");
                 return;
             }
 
-            setMessage("✅ เข้าสู่ระบบสำเร็จ!");
+            setMessage("✅ Login successful!");
             setTimeout(() => {
                 router.replace("/review");
             }, 500);
         } catch (error) {
-            console.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบ", error);
-            setMessage("❌ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง");
+            console.error("Error occurred logging in.", error);
+            setMessage("❌ Please try again.");
         }
     };
 

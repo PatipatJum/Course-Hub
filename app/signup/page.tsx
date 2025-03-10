@@ -1,6 +1,9 @@
 'use client'
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Agbalumo } from 'next/font/google';
+
+const agbalumo = Agbalumo({ subsets: ['latin'], weight: "400" });
 
 export default function RegisterForm() {
     const router = useRouter();
@@ -30,10 +33,10 @@ export default function RegisterForm() {
                 setIsRegistered(true); // ซ่อนฟอร์ม
                 return;
             }
-            setMessage("❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+            setMessage("❌ Email or password is incorrect.");
         } catch (error) {
             console.log('error: ', error);
-            setMessage("❌ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง");
+            setMessage("❌ Error occurred, Please try again.");
         }
     };
 
@@ -45,39 +48,39 @@ export default function RegisterForm() {
                 {/* ถ้าสมัครเสร็จ ให้แสดงข้อความสำเร็จแทนฟอร์ม */}
                 {isRegistered ? (
                     <div className="flex flex-col items-center">
-                        <h2 className="text-2xl font-bold text-green-400 mt-4">✅ สมัครสมาชิกสำเร็จ!</h2>
+                        <h2 className="text-2xl font-bold text-green-400 mt-4">✅ Success!</h2>
                         <button 
                             className="mt-5 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200"
                             onClick={() => router.push("/signin")}
                         >
-                            ↩️ กลับหน้า Login
+                            ↩️ Back to login page.
                         </button>
                     </div>
                 ) : (
                     <>
-                        <h2 className="text-2xl font-bold mb-4">สมัครสมาชิก</h2>
+                        <h2 className="text-2xl font-bold mb-4">Sign up</h2>
                         <form onSubmit={handleRegister} className="space-y-4">
                             <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 type="email"
                                 name="email"
-                                placeholder="📧 อีเมล"
+                                placeholder="📧 Email"
                                 onChange={handleChange}
                                 required
                             />
                             <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 type="text"
                                 name="name"
-                                placeholder="👤 ชื่อ"
+                                placeholder="👤 Name"
                                 onChange={handleChange}
                                 required
                             />
                             <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 type="password"
                                 name="password"
-                                placeholder="🔑 รหัสผ่าน"
+                                placeholder="🔑 Password"
                                 onChange={handleChange}
                                 required
                             />
@@ -85,14 +88,14 @@ export default function RegisterForm() {
                                 type="submit"
                                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded transition duration-200"
                             >
-                                ✅ สมัครสมาชิก
+                                ✅ Sign up
                             </button>
                         </form>
                         <button 
                             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition duration-200 mt-5"
                             onClick={() => router.push("/signin")}
                         >
-                            ↩️ กลับ
+                            ↩️ Back
                         </button>
                     </>
                 )}
