@@ -92,7 +92,7 @@ export default function Review() {
 
   return (
     status === 'authenticated' && session?.user && (
-      <div className="mt-10 min-h-screen dark flex flex-col">
+      <div className="mt-10 min-h-screen bg-bg-[#FFFAE6] flex flex-col">
         <div className="mt-10 text-black w-full max-w-4xl mx-auto">
 
           {/* ค้นหารายวิชา */}
