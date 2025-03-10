@@ -273,7 +273,7 @@ export default function Page() {
                         </div>
                         {/* rating */}
                         <div>
-                            <label className="block text-lg font-semibold mb-1">⭐ ให้คะแนน (0-5)</label>
+                            <label className="block text-lg font-semibold mb-1">⭐ ให้คะแนน (1-5)</label>
                             <input
                                 className="w-full p-3 border border-blue-700 rounded bg-white text-black"
                                 type="number"
@@ -304,9 +304,9 @@ export default function Page() {
                                         ? review.course.name.charAt(0).toUpperCase() + review.course.name.slice(1)
                                         : 'คอร์สที่ไม่รู้จัก'}
                                 </span>
-                                <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                    ⭐{review.rating}/5
-                                </span>
+                                <div className="text-yellow-500 text-3xl">
+                                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                </div>
                             </div>
 
                             <p className="text-gray-700 text-base mb-2">{review.comment}</p>
