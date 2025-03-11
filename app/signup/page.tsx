@@ -41,7 +41,7 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-[#FFFAE6]">
+        <div className="flex items-center justify-center min-h-screen dark">
             <div className="bg-[#FFFAE6] text-black p-8 rounded-lg shadow-lg w-[450px] text-center border-4 border-black">
                 <h1 className={`${agbalumo.className} text-5xl font-bold italic text-black drop-shadow-lg mb-4`}>Sign up</h1>
 
