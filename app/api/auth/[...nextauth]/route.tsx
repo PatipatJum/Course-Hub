@@ -1,26 +1,47 @@
-import NextAuth, { AuthOptions, Session, DefaultSession  } from "next-auth";
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcryptjs"; // ป้องกัน TS error
 import { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-//Custom Type สำหรับ Session ให้รองรับ user.id
+// Custom Type สำหรับ Session ให้รองรับ user.id
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string
-    } & DefaultSession["user"]
+      id: string;
+    } & DefaultSession["user"];
   }
 
   interface User {
-    id: string
+    id: string;
   }
 }
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  throw new Error("❌ Missing Google OAuth credentials in .env file");
+}
+
 export const authOptions: AuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: `${profile.given_name} ${profile.family_name}`,
+          email: profile.email,
+          image: profile.picture,
+        }
+      },
+    }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -29,15 +50,15 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error(" กรุณากรอก Email และ Password");
+          throw new Error("กรุณากรอก Email และ Password");
         }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
-          throw new Error(" อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        if (!user || !user.password || !(await bcrypt.compare(credentials.password, user.password))) {
+          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
         }
 
         return {
@@ -48,33 +69,34 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+
   adapter: PrismaAdapter(prisma),
+
   session: {
     strategy: "jwt",
   },
+
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        token.id = user.id;
+        token.id = Number(user.id); // 🔥 แปลง id เป็น Number (ให้ตรงกับ Prisma)
+        token.picture = user.image; // ✅ เพิ่ม image เข้า token
       }
-      console.log("🔑 JWT Token:", token);
       return token;
     },
+    
     session: async ({ session, token }) => {
-      console.log("🛠 Before modifying session:", session);
-      
-      //กำหนด `session.user.id` ให้ถูกต้อง
       if (session.user) {
-        (session.user as { id: string }).id = token.id as string;
+        session.user.id = String(token.id); // 🔥 แปลง id กลับเป็น String
+        session.user.image = token.picture; // ✅ เพิ่ม image เข้า session
       }
-
-      console.log(" After modifying session:", session);
       return session;
     },
   },
+  
 };
 
-//  ใช้ API Route Handler ที่รองรับ TypeScript
+// API Route Handler ที่รองรับ TypeScript
 const handler = (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, authOptions);
 
