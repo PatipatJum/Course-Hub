@@ -13,7 +13,7 @@ export default function RegisterForm() {
         password: ""
     });
     const [message, setMessage] = useState("");
-    const [isRegistered, setIsRegistered] = useState(false); // ตรวจสอบว่าสมัครสำเร็จหรือไม่
+    const [isRegistered, setIsRegistered] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +30,7 @@ export default function RegisterForm() {
             });
 
             if (result?.ok) {
-                setIsRegistered(true); // ซ่อนฟอร์ม
+                setIsRegistered(true);
                 return;
             }
             setMessage("❌ Email or password is incorrect.");
@@ -41,65 +41,73 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen dark">
-            <div className="bg-gray-800 text-white p-8 rounded-lg shadow-lg w-96 text-center">
-                <h1 className="text-5xl font-bold text-orange-400">Course-hub</h1>
+        <div className="flex items-center justify-center min-h-screen bg-[#FFFAE6]">
+            <div className="bg-[#FFFAE6] text-black p-8 rounded-lg shadow-lg w-[450px] text-center border-4 border-black">
+                <h1 className={`${agbalumo.className} text-5xl font-bold italic text-black drop-shadow-lg mb-4`}>Sign up</h1>
 
-                {/* ถ้าสมัครเสร็จ ให้แสดงข้อความสำเร็จแทนฟอร์ม */}
                 {isRegistered ? (
                     <div className="flex flex-col items-center">
-                        <h2 className="text-2xl font-bold text-green-400 mt-4">✅ Success!</h2>
+                        <h2 className="text-2xl font-bold text-green-600 mt-4">✅ Success!</h2>
                         <button 
-                            className="mt-5 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200"
+                            className="mt-5 bg-black text-white font-bold py-2 px-4 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
                             onClick={() => router.push("/signin")}
                         >
-                            ↩️ Back to login page.
+                            Back to login page
                         </button>
                     </div>
                 ) : (
                     <>
-                        <h2 className="text-2xl font-bold mb-4">Sign up</h2>
-                        <form onSubmit={handleRegister} className="space-y-4">
+                        <form onSubmit={handleRegister} className="space-y-5 text-left">
+                            <label className="font-bold italic text-lg block">
+                                Username :
+                            </label>
                             <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                type="email"
-                                name="email"
-                                placeholder="📧 Email"
-                                onChange={handleChange}
-                                required
-                            />
-                            <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
                                 type="text"
                                 name="name"
-                                placeholder="👤 Name"
                                 onChange={handleChange}
                                 required
                             />
+
+                            <label className="font-bold italic text-lg block">
+                                Password : <span className="text-gray-500 text-sm">Enter at least 6 characters.</span>
+                            </label>
                             <input
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white italic focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
                                 type="password"
                                 name="password"
-                                placeholder="🔑 Password"
                                 onChange={handleChange}
                                 required
                             />
+
+                            <label className="font-bold italic text-lg block">
+                                E-mail :
+                            </label>
+                            <input
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
+                                type="email"
+                                name="email"
+                                onChange={handleChange}
+                                required
+                            />
+
                             <button
                                 type="submit"
-                                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded transition duration-200"
+                                className="w-full bg-[#FFA500] text-white font-bold italic py-3 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
                             >
-                                ✅ Sign up
+                                Create account
                             </button>
                         </form>
+
                         <button 
-                            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition duration-200 mt-5"
+                            className="mt-5 bg-black text-white font-bold italic py-2 px-5 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
                             onClick={() => router.push("/signin")}
                         >
-                            ↩️ Back
+                            Back
                         </button>
                     </>
                 )}
-                
+
                 {message && (
                     <p className={`mt-3 text-sm font-medium ${message.startsWith("✅") ? "text-green-500" : "text-red-500"}`}>
                         {message}
