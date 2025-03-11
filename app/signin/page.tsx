@@ -104,24 +104,23 @@ export default function LoginPage() {
                 <Divider />
 
                 <button
-                    type="button"
-                    onClick={() => signIn("google", { callbackUrl: "/review" })} // ✅ เพิ่ม callbackUrl
-                    className="w-full flex items-center justify-center gap-2 p-2 border rounded-lg shadow-md hover:bg-gray-100 transition"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 488 512"
-                        width="20"
-                        height="20"
-                    >
-                        <path
-                            fill="#4285F4"
-                            d="M488 261.8C488 403.3 391.1 504 248 504 110.9 504 0 393.1 0 256S110.9 8 248 8c66.2 0 120.9 21.5 163.4 57L336 133.3C304.1 108.4 277.2 96 248 96c-81 0-146.8 66.5-146.8 146.8S167 389.6 248 389.6c73.5 0 120.7-47.5 126.8-113.9H248V192h240c2.2 11.5 3.3 23.4 3.3 36z"
-                        />
-                    </svg>
-                    Sign in with Google
-                </button>
-
+    type="button"
+    onClick={() => signIn("google", { callbackUrl: "/review" })}
+    className="w-full flex items-center justify-center gap-3 p-3 bg-[#FFA500] text-white font-bold italic rounded-full shadow-xl hover:bg-[#FF8C00] transition duration-300"
+>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 488 512"
+        width="24"
+        height="24"
+        fill="white"
+    >
+        <path
+            d="M488 261.8C488 403.3 391.1 504 248 504 110.9 504 0 393.1 0 256S110.9 8 248 8c66.2 0 120.9 21.5 163.4 57L336 133.3C304.1 108.4 277.2 96 248 96c-81 0-146.8 66.5-146.8 146.8S167 389.6 248 389.6c73.5 0 120.7-47.5 126.8-113.9H248V192h240c2.2 11.5 3.3 23.4 3.3 36z"
+        />
+    </svg>
+    Sign in with Google
+</button>
 
                 {message && (
                     <p className={`mt-4 text-sm font-medium ${message.startsWith("✅") ? "text-green-500" : "text-red-500"}`}>
