@@ -39,7 +39,7 @@ export default function LeftsideNavbar() {
                 <FaHeart />
                 <span>Favorite Review</span>
             </Link>
-            <Link href="/review" className="text-white text-2xl p-4 rounded-md transition hover:bg-gray-700 flex items-center gap-3">
+            <Link href="/setting" className="text-white text-2xl p-4 rounded-md transition hover:bg-gray-700 flex items-center gap-3">
                 <IoSettings/>
                 <span>Setting</span>
             </Link>
