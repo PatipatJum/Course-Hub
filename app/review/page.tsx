@@ -133,17 +133,18 @@ export default function Review() {
             ) : filteredReviews.length > 0 ? (
               <ul>
                 {filteredReviews.map((review: any) => (
-                  <li key={review.id} className="mb-8 py-6 px-4 border-4 border-gray-900 rounded-lg shadow-none bg-white">
+                  <li
+                    key={review.id}
+                    className="mb-8 py-6 px-4 border-4 border-gray-900 rounded-lg shadow-none bg-white"
+                  >
                     <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                          {review.course?.name
-                            ? review.course.name.charAt(0).toUpperCase() + review.course.name.slice(1)
-                            : 'คอร์สที่ไม่รู้จัก'}
-                        </span>
-                        <div className="text-yellow-500 text-3xl">
-                         {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                        </div>
+                      <span className="bg-green-500 text-white px-4 py-4 rounded-lg text-sm font-semibold text-[1.4rem]">
+                        {review.course?.name
+                          ? review.course.name.charAt(0).toUpperCase() + review.course.name.slice(1)
+                          : 'คอร์สที่ไม่รู้จัก'}
+                      </span>
+                      <div className="text-yellow-500 text-3xl text-[2.5rem] ml-auto">
+                        {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                       </div>
                     </div>
                     <p className="mt-2 text-gray-700">{review.comment}</p>
@@ -157,6 +158,7 @@ export default function Review() {
                     </div>
                   </li>
                 ))}
+
               </ul>
             ) : (
               <p>ไม่พบรีวิว</p>

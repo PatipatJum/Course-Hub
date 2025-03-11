@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import { Star } from "lucide-react";
 import axios from "axios";
 
 interface Review {
@@ -29,6 +30,13 @@ interface Course {
     name: string;
 };
 
+interface StarRatingProps {
+    rating: number;
+    setRating: (rating: number) => void;
+};
+
+
+
 export default function Page() {
     const router = useRouter();
     const { data: session, status } = useSession();
@@ -38,6 +46,7 @@ export default function Page() {
         newContent: "",
         newRating: 0,
     })
+
     const [countdown, setCountdown] = useState(3);
     const [showModal, setShowModal] = useState(false);
 
@@ -62,10 +71,39 @@ export default function Page() {
         setShowEditModal(true);
     };
 
+    const StarRating = ({ rating, setRating }: StarRatingProps) => {
+        return (
+            <div className="flex space-x-1">
+                {[...Array(5)].map((_, i) => (
+                    <Star
+                        key={i}
+                        className={`cursor-pointer ${i < rating ? "fill-yellow-400 stroke-yellow-400" : "fill-gray-300 stroke-gray-300"
+                            }`}
+                        onClick={() => setRating(i + 1)}
+                        size={60}
+                    />
+                ))}
+                <button
+                    onClick={() => setRating(0)}
+                    className="bg-red-500 py-[0.1rem] px-[0.3rem] rounded-lg text-[1.5rem]"
+                >
+                    Clear
+                </button>
+            </div>
+        );
+    };
+
+    const handleRatingChange = (value: number) => {
+        setNewReview({ ...newReview, newRating: value });
+    };
+
+    const handleRatingEdit = (value: number) => {
+        setDataEdit({ ...dataEdit, editRating: value });
+    };
+
+    console.log(newReview.newRating);
 
     console.log(session?.user.id);
-
-
 
     // fatchdata
     const fetchReview = async () => {
@@ -95,11 +133,7 @@ export default function Page() {
         }
     };
 
-
-
     const handleDelete = async (Id: string) => {
-        // console.log(courseId);
-
         try {
             if (!session?.user?.id) {
                 console.warn("Session ยังไม่พร้อม หรือไม่มี user ID");
@@ -133,7 +167,7 @@ export default function Page() {
         }
     };
 
-    const handleSelect = (courseName: string) =>{
+    const handleSelect = (courseName: string) => {
         setNewReview(prevState => ({ ...prevState, newNameCourse: courseName }));
         setSuggestions([]);
     }
@@ -153,6 +187,12 @@ export default function Page() {
                 return;
             }
 
+            if (Number(dataEdit.editRating) > 5) {
+                dataEdit.editRating = 5;
+            }
+            else if (Number(dataEdit.editRating) < 0) {
+                dataEdit.editRating = 0;
+            }
             await axios.put(`/api/review/${session.user.id}`, {
                 reviewId: id,
                 rating: dataEdit.editRating,
@@ -193,6 +233,12 @@ export default function Page() {
         }
 
         try {
+            if (Number(newReview.newRating) > 5) {
+                newReview.newRating = 5;
+            }
+            else if (Number(newReview.newRating) < 0) {
+                newReview.newRating = 0;
+            }
             await axios.post(`/api/review/${session.user.id}`, {
                 course_name: newReview.newNameCourse,
                 rating: Number(newReview.newRating),
@@ -226,17 +272,17 @@ export default function Page() {
     return (
         status === 'authenticated' &&
         session?.user && (
-            <div className="mt-20 bg-white p-8 max-w-3xl mx-auto rounded-lg">
+            <div className="mt-20 bg-white p-8 max-w-4xl mx-auto rounded-lg">
 
                 {/* input form */}
                 <div className="max-w-2xl mx-auto  p-6 bg-blue-900 shadow-lg rounded-lg text-white">
-                    <h1 className="text-3xl font-bold text-center mb-6">✍️ เขียนรีวิวของฉัน</h1>
+                    <h1 className="text-[4rem] font-bold text-center mb-6">✍️ เขียนรีวิวของฉัน</h1>
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         {/* course */}
                         <div className="relative">
-                            <label className="block text-lg font-semibold mb-2">📚 ชื่อคอร์ส</label>
+                            <label className="block text-lg font-semibold mb-2 text-[2rem]">📚 ชื่อคอร์ส</label>
                             <input
-                                className="w-full p-3 border border-blue-700 rounded-md bg-white text-black focus:ring-2 focus:ring-blue-600"
+                                className="w-full p-3 border border-blue-700 rounded-md bg-white text-black focus:ring-2 focus:ring-blue-600 text-[1rem]"
                                 type="text"
                                 placeholder="กรอกชื่อคอร์ส"
                                 name="newNameCourse"
@@ -261,9 +307,9 @@ export default function Page() {
 
                         {/* content */}
                         <div>
-                            <label className="block text-lg font-semibold mb-1">📝 คอมเมนต์</label>
+                            <label className="block text-lg font-semibold mb-3 text-[2rem]">📝 คอมเมนต์</label>
                             <textarea
-                                className="w-full p-3 border border-blue-700 rounded bg-white text-black h-40"
+                                className="w-full p-3 border border-blue-700 rounded bg-white text-black h-40 "
                                 placeholder="เขียนรีวิวของคุณที่นี่..."
                                 name="newContent"
                                 value={newReview.newContent}
@@ -273,17 +319,8 @@ export default function Page() {
                         </div>
                         {/* rating */}
                         <div>
-                            <label className="block text-lg font-semibold mb-1">⭐ ให้คะแนน (1-5)</label>
-                            <input
-                                className="w-full p-3 border border-blue-700 rounded bg-white text-black"
-                                type="number"
-                                min="1"
-                                max="5"
-                                placeholder="ให้คะแนน (1-5)"
-                                name="newRating"
-                                value={newReview.newRating}
-                                onChange={handleChange}
-                            />
+                            <label className="block text-lg font-semibold mb-1">⭐ ให้คะแนน (0-5)</label>
+                            <StarRating rating={newReview.newRating} setRating={handleRatingChange} />
                         </div>
                         <button type="submit"
                             className="bg-blue-700 hover:bg-blue-800 text-xl font-bold p-3 text-center w-full text-white rounded transition duration-200"
@@ -298,13 +335,13 @@ export default function Page() {
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
                         <div key={review.id} className="border rounded-lg p-4 mb-4 shadow-md">
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <div className="flex items-center mb-2">
+                                <span className="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold text-[1.5rem]">
                                     {review.course?.name
                                         ? review.course.name.charAt(0).toUpperCase() + review.course.name.slice(1)
                                         : 'คอร์สที่ไม่รู้จัก'}
                                 </span>
-                                <div className="text-yellow-500 text-3xl">
+                                <div className="text-yellow-500 text-3xl ml-auto">
                                     {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                                 </div>
                             </div>
@@ -312,25 +349,29 @@ export default function Page() {
                             <p className="text-gray-700 text-base mb-2">{review.comment}</p>
 
                             <p className="text-sm text-gray-500">
-                                รีวิวเมื่อ {new Date(review.createdAt).toLocaleDateString('th-TH', {
+                                รีวิวเมื่อ{' '}
+                                {new Date(review.createdAt).toLocaleDateString('th-TH', {
                                     day: 'numeric',
                                     month: 'long',
                                     year: 'numeric',
                                     hour: '2-digit',
-                                    minute: '2-digit'
+                                    minute: '2-digit',
                                 })}
                             </p>
                             <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                 โดย {review.user?.name || 'ผู้ใช้ที่ไม่รู้จัก'}
                             </span>
-                            {/* buutton */}
+
+                            {/* Buttons */}
                             <div className="flex justify-center mt-2">
-                                <button className="rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white py-1 mx-2 w-1/2"
+                                <button
+                                    className="rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white py-1 mx-2 w-1/2"
                                     onClick={() => handleEditModal(review)}
                                 >
                                     ✏️ Edit
                                 </button>
-                                <button className="rounded-lg bg-red-500 hover:bg-red-600 text-white py-1 mx-2 w-1/2"
+                                <button
+                                    className="rounded-lg bg-red-500 hover:bg-red-600 text-white py-1 mx-2 w-1/2"
                                     onClick={() => handleDelete(review.id)}
                                 >
                                     🗑️ Delete
@@ -341,6 +382,7 @@ export default function Page() {
                 ) : (
                     <p className="text-gray-500 text-center">ยังไม่มีรีวิว</p>
                 )}
+
 
                 {/* Modal inputdata Popup */}
                 {showModal && (
@@ -371,13 +413,7 @@ export default function Page() {
                             ></textarea>
 
                             <label className="block mt-4 text-gray-700 font-semibold">⭐ ให้คะแนน (0-5)</label>
-                            <input
-                                className="w-full p-2 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                type="number" min="0" max="5"
-                                value={dataEdit.editRating}
-                                name="editRating"
-                                onChange={handleEditChange}
-                            />
+                            <StarRating rating={dataEdit.editRating} setRating={handleRatingEdit} />
 
                             <div className="flex justify-between mt-6">
                                 <button
