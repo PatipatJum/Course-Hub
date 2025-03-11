@@ -61,9 +61,12 @@ export default function ReviewPage() {
       <div className="mt-10 min-h-screen bg-bg-[#FFFAE6] flex flex-col">
         <div className="mt-10 text-black w-full max-w-4xl mx-auto">
           <h1 className='text-5xl font-bold mb-2'>ค้นหารายวิชา</h1>
-          <button onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")} className="p-2 bg-blue-500 text-white rounded-md">
-            เรียงตามดาว: {sortOrder === "desc" ? "มากไปน้อย" : "น้อยไปมาก"}
-          </button>
+          <div className="relative w-full flex gap-2 items-center">
+            <input type="text" placeholder="🔍 ค้นหาคอร์ส..." className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")} className="p-2 bg-blue-500 text-white rounded-md">
+              เรียงตามดาว: {sortOrder === "desc" ? "มากไปน้อย" : "น้อยไปมาก"}
+            </button>
+          </div>
 
           {/* แสดงข้อมูลรีวิว */}
           <div className="mt-4">
