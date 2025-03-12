@@ -41,15 +41,15 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen dark">
-            <div className="bg-[#FFFAE6] text-black p-8 rounded-lg shadow-lg w-[450px] text-center border-4 border-black">
-                <h1 className={`${agbalumo.className} text-5xl font-bold italic text-black drop-shadow-lg mb-4`}>Sign up</h1>
+        <div className="flex items-center justify-center min-h-screen bg-[#FFFAE6]">
+            <div className="bg-black text-white p-8 rounded-lg shadow-lg w-[450px] text-center border-4 border-black relative">
+                <h1 className={`${agbalumo.className} text-5xl font-bold italic drop-shadow-lg mb-6 text-white`}>Sign up</h1>
 
                 {isRegistered ? (
                     <div className="flex flex-col items-center">
                         <h2 className="text-2xl font-bold text-green-600 mt-4">✅ Success!</h2>
                         <button 
-                            className="mt-5 bg-black text-white font-bold py-2 px-4 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
+                            className="mt-5 bg-white text-black font-bold py-2 px-4 rounded-full shadow-lg border-2 border-white hover:bg-gray-800 hover:text-white transition"
                             onClick={() => router.push("/signin")}
                         >
                             Back to login page
@@ -57,34 +57,34 @@ export default function RegisterForm() {
                     </div>
                 ) : (
                     <>
-                        <form onSubmit={handleRegister} className="space-y-5 text-left">
-                            <label className="font-bold italic text-lg block">
+                        <form onSubmit={handleRegister} className="space-y-4 text-left flex flex-col items-center">
+                            <label className="font-bold italic text-lg block text-white w-full">
                                 Username :
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-2"
                                 type="text"
                                 name="name"
                                 onChange={handleChange}
                                 required
                             />
 
-                            <label className="font-bold italic text-lg block">
-                                Password : <span className="text-gray-500 text-sm">Enter at least 6 characters.</span>
+                            <label className="font-bold italic text-lg block text-white w-full">
+                                Password : <span className="text-gray-400 text-sm">Enter at least 6 characters.</span>
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-2"
                                 type="password"
                                 name="password"
                                 onChange={handleChange}
                                 required
                             />
 
-                            <label className="font-bold italic text-lg block">
+                            <label className="font-bold italic text-lg block text-white w-full">
                                 E-mail :
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-black rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-6"
                                 type="email"
                                 name="email"
                                 onChange={handleChange}
@@ -93,14 +93,14 @@ export default function RegisterForm() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-[#FFA500] text-white font-bold italic py-3 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
+                                className="w-40 bg-[#FFA500] text-white font-bold italic py-3 rounded-full shadow-lg hover:bg-[#FF8C00] transition text-center mt-4"
                             >
                                 Create account
                             </button>
                         </form>
 
                         <button 
-                            className="mt-5 bg-black text-white font-bold italic py-2 px-5 rounded-full shadow-lg border-2 border-black hover:bg-gray-800 transition"
+                            className="mt-5 bg-white text-black font-bold italic py-2 px-5 rounded-full shadow-lg border-2 border-white hover:bg-gray-800 hover:text-white transition"
                             onClick={() => router.push("/signin")}
                         >
                             Back
