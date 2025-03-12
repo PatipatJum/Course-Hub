@@ -8,7 +8,6 @@ import AuthProvider from "./components/SessionProvider";
 import { SidebarProvider } from "./components/SidebarContext";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const session = await getServerSession(authOptions);
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +26,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerSession();
+  // ✅ เรียก getServerSession ภายในฟังก์ชัน async
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
@@ -36,7 +36,7 @@ export default async function RootLayout({
           <SidebarProvider>
             <Navbar />
             <LeftsideNavbar />
-            <main className="transition-all duration-300">
+            <main className="transition-all duration-300 pt-16">
               {children}
             </main>
           </SidebarProvider>
