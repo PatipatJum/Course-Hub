@@ -272,7 +272,7 @@ export default function Page() {
     return (
         status === 'authenticated' &&
         session?.user && (
-            <div className="mt-20 bg-white p-8 max-w-4xl mx-auto rounded-lg">
+            <div className=" mt-1 bg-white p-8 max-w-4xl mx-auto rounded-lg">
 
                 {/* input form */}
                 <div className="max-w-2xl mx-auto  p-6 bg-blue-900 shadow-lg rounded-lg text-white">
