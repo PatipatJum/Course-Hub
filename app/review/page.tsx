@@ -82,7 +82,8 @@ export default function ReviewPage() {
 
   return (
     status === 'authenticated' && session?.user && (
-      <div className=" min-h-screen bg-[#FFFAE6] flex flex-col">
+
+      <div className="mt-10 min-h-screen dark: flex flex-col">
         <div className="mt-10 text-black w-full max-w-4xl mx-auto">
           <h1 className='text-5xl font-bold mb-2'>ค้นหารายวิชา</h1>
           <div className="relative w-full flex gap-2 items-center">
