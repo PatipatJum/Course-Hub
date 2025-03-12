@@ -57,34 +57,34 @@ export default function RegisterForm() {
                     </div>
                 ) : (
                     <>
-                        <form onSubmit={handleRegister} className="space-y-5 text-left">
-                            <label className="font-bold italic text-lg block text-white">
+                        <form onSubmit={handleRegister} className="space-y-4 text-left flex flex-col items-center">
+                            <label className="font-bold italic text-lg block text-white w-full">
                                 Username :
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-2"
                                 type="text"
                                 name="name"
                                 onChange={handleChange}
                                 required
                             />
 
-                            <label className="font-bold italic text-lg block text-white">
+                            <label className="font-bold italic text-lg block text-white w-full">
                                 Password : <span className="text-gray-400 text-sm">Enter at least 6 characters.</span>
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-2"
                                 type="password"
                                 name="password"
                                 onChange={handleChange}
                                 required
                             />
 
-                            <label className="font-bold italic text-lg block text-white">
+                            <label className="font-bold italic text-lg block text-white w-full">
                                 E-mail :
                             </label>
                             <input
-                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-lg shadow-md italic focus:outline-none"
+                                className="w-full px-4 py-3 bg-white text-black border-2 border-white rounded-full shadow-md italic focus:outline-none mb-6"
                                 type="email"
                                 name="email"
                                 onChange={handleChange}
@@ -93,7 +93,7 @@ export default function RegisterForm() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-[#FFA500] text-white font-bold italic py-3 rounded-full shadow-lg hover:bg-[#FF8C00] transition"
+                                className="w-40 bg-[#FFA500] text-white font-bold italic py-3 rounded-full shadow-lg hover:bg-[#FF8C00] transition text-center mt-4"
                             >
                                 Create account
                             </button>

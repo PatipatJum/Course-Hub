@@ -4,21 +4,19 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { Agbalumo } from 'next/font/google';
 
-// ✅ กำหนด Type ของรีวิว
+const agbalumo = Agbalumo({ subsets: ['latin'], weight: '400' });
+
 type Review = {
   id: string;
   course: { name: string };
   rating: number;
   comment: string;
   createdAt: string;
-  user: { 
-    name: string,
-    id:number,
-  };
+  user: { name: string; id: number };
 };
 
-// ฟังก์ชันสร้างค่า Hash จากชื่อคอร์ส
 const hashCode = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -28,7 +26,6 @@ const hashCode = (str: string) => {
   return hash;
 };
 
-// ฟังก์ชันสุ่มสีจากค่า Hash
 const getColorFromHash = (hash: number) => {
   const colors = [
     'bg-green-500', 'bg-blue-500', 'bg-red-500', 'bg-yellow-500',
@@ -45,10 +42,9 @@ export default function ReviewPage() {
   const router = useRouter();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc');
 
-  // โหลดข้อมูลรีวิว
   const fetchAllReviews = async () => {
     try {
       const response = await axios.get('/api/review');
@@ -59,7 +55,6 @@ export default function ReviewPage() {
     }
   };
 
-  // ค้นหาคอร์สตามชื่อ
   useEffect(() => {
     const filtered = reviews.filter((review) =>
       review.course.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,9 +62,8 @@ export default function ReviewPage() {
     setFilteredReviews(filtered);
   }, [searchTerm, reviews]);
 
-  // เรียงลำดับรีวิวตามเรตติ้ง
   const sortedReviews = [...filteredReviews].sort((a, b) =>
-    sortOrder === "desc" ? b.rating - a.rating : a.rating - b.rating
+    sortOrder === 'desc' ? b.rating - a.rating : a.rating - b.rating
   );
 
   useEffect(() => {
@@ -82,10 +76,10 @@ export default function ReviewPage() {
 
   return (
     status === 'authenticated' && session?.user && (
-
-      <div className="mt-10 min-h-screen dark: flex flex-col">
-        <div className="mt-10 text-black w-full max-w-4xl mx-auto">
-          <h1 className='text-5xl font-bold mb-2'>ค้นหารายวิชา</h1>
+      <div className="mt-5 min-h-screen flex flex-col items-center">
+        <h1 className={`${agbalumo.className} text-[8rem] font-extrabold text-black drop-shadow-2xl italic`}>Course Hub</h1>
+        <div className="mt-7 text-black w-full max-w-4xl">
+          <h1 className='text-3xl font-bold mb-2 text-left text-[#FFA500] italic'>ค้นหารายวิชา</h1>
           <div className="relative w-full flex gap-2 items-center">
             <input
               type="text"
@@ -94,39 +88,37 @@ export default function ReviewPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")} className="p bg-blue-500 text-white rounded-md">
-              ดาว: {sortOrder === "desc" ? "มากไปน้อย" : "น้อยไปมาก"}
+            <button onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')} className="px-4 py-2 bg-[#FFA500] text-white rounded-md">
+              ดาว: {sortOrder === 'desc' ? 'มากไปน้อย' : 'น้อยไปมาก'}
             </button>
           </div>
 
-          <div className="mt-4">
-            <h2 className="text-5xl font-bold mb-4">รีวิวทั้งหมด</h2>
+          <div className="mt-6">
+            <h2 className="text-3xl font-bold mb-6 text-center text-[#FFA500] italic">รีวิวทั้งหมด</h2>
             {sortedReviews.length > 0 ? (
               <ul>
                 {sortedReviews.map((review) => (
-                  <li key={review.id} className="mb-8 py-6 px-4 border-4 border-gray-900 rounded-lg shadow-none bg-white">
+                  <li key={review.id} className="mb-8 py-6 px-4 border-4 border-gray-900 rounded-lg shadow-md bg-white">
                     <div className="flex justify-between items-center">
-                      <span className={`text-white px-3 py-1 rounded-full font-semibold text-[1.4rem] ${getColorFromHash(hashCode(review.course.name))}`}>
+                      <span className={`text-white px-4 py-2 rounded-full font-semibold text-[1.5rem] ${getColorFromHash(hashCode(review.course.name))}`}>
                         {review.course.name}
                       </span>
-                      <div className="text-yellow-500 text-3xl text-[2.5rem] ml-auto">
+                      <div className="text-yellow-500 text-3xl ml-auto">
                         {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                       </div>
                     </div>
-                    <p className="mt-2 text-gray-700">{review.comment}</p>
+                    <p className="mt-2 text-gray-700 text-lg">{review.comment}</p>
                     <p className="mt-4 text-sm text-gray-500">รีวิวเมื่อ {new Date(review.createdAt).toLocaleString()}</p>
                     <div className="mt-2">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
-                        onClick={() =>
-                          router.push(`/profile?id=${review.user.id}&user=${encodeURIComponent(review.user.name)}`)
-                        }
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
+                        onClick={() => router.push(`/profile?id=${review.user.id}&user=${encodeURIComponent(review.user.name)}`)}
                       >โดย {review.user.name}</button>
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p>ไม่พบรีวิว</p>
+              <p className="text-center text-gray-600 text-xl">ไม่พบรีวิว</p>
             )}
           </div>
         </div>
