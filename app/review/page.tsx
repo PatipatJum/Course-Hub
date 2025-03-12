@@ -12,7 +12,10 @@ type Review = {
   rating: number;
   comment: string;
   createdAt: string;
-  user: { name: string };
+  user: { 
+    name: string,
+    id:number,
+  };
 };
 
 // ฟังก์ชันสร้างค่า Hash จากชื่อคอร์ส
@@ -79,13 +82,14 @@ export default function ReviewPage() {
 
   return (
     status === 'authenticated' && session?.user && (
+
       <div className="mt-10 min-h-screen dark: flex flex-col">
         <div className="mt-10 text-black w-full max-w-4xl mx-auto">
           <h1 className='text-5xl font-bold mb-2'>ค้นหารายวิชา</h1>
           <div className="relative w-full flex gap-2 items-center">
-            <input 
-              type="text" 
-              placeholder="🔍 ค้นหาคอร์ส..." 
+            <input
+              type="text"
+              placeholder="🔍 ค้นหาคอร์ส..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -112,7 +116,11 @@ export default function ReviewPage() {
                     <p className="mt-2 text-gray-700">{review.comment}</p>
                     <p className="mt-4 text-sm text-gray-500">รีวิวเมื่อ {new Date(review.createdAt).toLocaleString()}</p>
                     <div className="mt-2">
-                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">โดย {review.user.name}</span>
+                      <button className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
+                        onClick={() =>
+                          router.push(`/profile?id=${review.user.id}&user=${encodeURIComponent(review.user.name)}`)
+                        }
+                      >โดย {review.user.name}</button>
                     </div>
                   </li>
                 ))}
