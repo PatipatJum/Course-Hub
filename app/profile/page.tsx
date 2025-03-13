@@ -99,7 +99,7 @@ export default function ProfilePage() {
 
   const defaultImage =
     "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
-
+    
   if (status === "loading" || loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] ">
