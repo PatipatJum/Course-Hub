@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [myProfile, setMyProfile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -49,6 +50,7 @@ export default function ProfilePage() {
       const { data } = await axios.get<UserData>(`/api/user/${userId}`);
       setUserData(data);
       setUserEdit(data);
+      setImageError(false); 
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -78,6 +80,12 @@ export default function ProfilePage() {
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const defaultImage = "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
+
   if (status === "loading") return <p className="text-center text-gray-500">Loading session...</p>;
 
   return (
@@ -85,9 +93,10 @@ export default function ProfilePage() {
       {userData ? (
         <div className="flex flex-col items-center space-y-4">
           <img
-            src={userData.image || "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg"}
+            src={imageError || !userData.image ? defaultImage : userData.image}
             alt={userData.name}
-            className="w-32 h-32 rounded-full border-4 border-gray-300"
+            className="w-32 h-32 rounded-full border-4 border-gray-300 object-cover"
+            onError={handleImageError}
           />
           <h1 className="text-2xl font-bold text-black">ชื่อ: {userData.name}</h1>
           {myProfile && (
