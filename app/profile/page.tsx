@@ -1,8 +1,9 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 interface UserData {
   id: string;
@@ -31,6 +32,7 @@ export default function ProfilePage() {
   const [myProfile, setMyProfile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -38,11 +40,22 @@ export default function ProfilePage() {
       return;
     }
     if (status === "authenticated" && userId) {
-      setMyProfile(session?.user?.id === userId);
-      fetchUserData();
-      fetchReviews();
+      loadProfileData();
     }
-  }, [status, userId, session, router]);
+  }, [status, userId]);
+
+  const loadProfileData = async () => {
+    setLoading(true);
+    try {
+      await fetchUserData();
+      await fetchReviews();
+      setMyProfile(session?.user?.id === userId);
+    } catch (error) {
+      console.error("Error loading profile data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchUserData = async () => {
     if (!userId) return;
@@ -50,7 +63,7 @@ export default function ProfilePage() {
       const { data } = await axios.get<UserData>(`/api/user/${userId}`);
       setUserData(data);
       setUserEdit(data);
-      setImageError(false); 
+      setImageError(false);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -74,7 +87,7 @@ export default function ProfilePage() {
         image: userEdit.image,
       });
       setShowPopup(false);
-      fetchUserData();
+      loadProfileData();
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -84,9 +97,22 @@ export default function ProfilePage() {
     setImageError(true);
   };
 
-  const defaultImage = "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
+  const defaultImage =
+    "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
 
-  if (status === "loading") return <p className="text-center text-gray-500">Loading session...</p>;
+  if (status === "loading" || loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] ">
+        <DotLottieReact
+          src="https://lottie.host/3a15ecf4-5d2b-4255-9f9f-d48dc70d7e00/c3O3rSDKOA.lottie"
+          loop
+          autoplay
+          className="w-[20rem] h-[20rem]"
+        />
+        <p className="text-black-500 text-lg mt-4">กำลังโหลดข้อมูล...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -109,7 +135,7 @@ export default function ProfilePage() {
           )}
         </div>
       ) : (
-        <p className="text-gray-500 text-center">Loading user data...</p>
+        <p className="text-gray-500 text-center">ไม่พบข้อมูลผู้ใช้</p>
       )}
 
       {showPopup && (
@@ -120,19 +146,37 @@ export default function ProfilePage() {
             <input
               type="text"
               value={userEdit?.name || ""}
-              onChange={(e) => setUserEdit((prev) => prev ? { ...prev, name: e.target.value } : null)}
+              onChange={(e) =>
+                setUserEdit((prev) =>
+                  prev ? { ...prev, name: e.target.value } : null
+                )
+              }
               className="border p-2 rounded-lg w-full mb-4"
             />
             <label className="block mb-2 font-medium">รูปโปรไฟล์ (URL)</label>
             <input
               type="text"
               value={userEdit?.image || ""}
-              onChange={(e) => setUserEdit((prev) => prev ? { ...prev, image: e.target.value } : null)}
+              onChange={(e) =>
+                setUserEdit((prev) =>
+                  prev ? { ...prev, image: e.target.value } : null
+                )
+              }
               className="border p-2 rounded-lg w-full mb-4"
             />
             <div className="flex justify-end space-x-2">
-              <button onClick={() => setShowPopup(false)} className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">ยกเลิก</button>
-              <button onClick={updateProfile} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">บันทึก</button>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg"
+              >
+                ยกเลิก
+              </button>
+              <button
+                onClick={updateProfile}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+                บันทึก
+              </button>
             </div>
           </div>
         </div>
@@ -148,18 +192,20 @@ export default function ProfilePage() {
           {reviews.map((review) => (
             <li key={review.id} className="p-6 border-4 border-gray-900 rounded-lg shadow-lg bg-white">
               <div className="flex justify-between items-center">
-                <span className="text-white px-3 py-1 rounded-full font-semibold text-lg bg-blue-500">{review.course.name}</span>
-                <div className="text-yellow-500 text-3xl ml-auto">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+                <span className="text-white px-3 py-1 rounded-full font-semibold text-lg bg-blue-500">
+                  {review.course.name}
+                </span>
+                <div className="text-yellow-500 text-3xl ml-auto">
+                  {"★".repeat(review.rating)}
+                  {"☆".repeat(5 - review.rating)}
+                </div>
               </div>
               <p className="mt-2 text-gray-700">{review.comment}</p>
-              <p className="mt-4 text-sm text-gray-500">🕒 รีวิวเมื่อ {new Date(review.createdAt).toLocaleString()}</p>
             </li>
           ))}
         </ul>
       ) : (
-        <div className="text-center text-gray-500 mt-6 p-6 border border-gray-300 rounded-lg">
-          <p className="text-lg">ยังไม่มีรีวิว</p>
-        </div>
+        <p className="text-gray-500 text-center">ยังไม่มีรีวิว</p>
       )}
     </div>
   );
