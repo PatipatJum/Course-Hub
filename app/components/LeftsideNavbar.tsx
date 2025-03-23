@@ -40,7 +40,7 @@ export default function LeftsideNavbar() {
                 <span>Favorite Review</span>
             </Link>
             <Link
-                href="https://www.facebook.com/groups/1265420194707456"
+                href="https://www.facebook.com/share/g/1AXA64ASH4/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white text-2xl p-4 rounded-md transition hover:bg-gray-700 flex items-center gap-3"
