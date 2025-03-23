@@ -39,10 +39,6 @@ export default function LeftsideNavbar() {
                 <FaHeart />
                 <span>Favorite Review</span>
             </Link>
-            <Link href="/setting" className="text-white text-2xl p-4 rounded-md transition hover:bg-gray-700 flex items-center gap-3">
-                <IoSettings/>
-                <span>Setting</span>
-            </Link>
             <Link
                 href="https://www.facebook.com/groups/1265420194707456"
                 target="_blank"
