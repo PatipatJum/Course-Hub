@@ -35,10 +35,6 @@ export default function LeftsideNavbar() {
                 <FaPlus />
                 <span>Adding Course</span>
             </Link>
-            <Link href="/review" className="text-white text-1xl p-4 rounded-md transition hover:bg-gray-700 flex items-center gap-3">
-                <FaHeart />
-                <span>Favorite Review</span>
-            </Link>
             <Link
                 href="https://www.facebook.com/share/g/1AXA64ASH4/"
                 target="_blank"
