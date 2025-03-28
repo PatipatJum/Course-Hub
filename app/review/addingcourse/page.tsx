@@ -38,6 +38,8 @@ interface StarRatingProps {
 
 
 export default function Page() {
+
+    //----------------------------------------State Management with useState------------------------------------------------------------
     const router = useRouter();
     const { data: session, status } = useSession();
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -60,17 +62,11 @@ export default function Page() {
 
     const [allCourse, setallCourse] = useState<Course[]>([]);
     const [suggestions, setSuggestions] = useState<Course[]>([])
-
-    const handleEditModal = (review: Review) => {
-        setDataEdit({
-            editCourseId: review.id,
-            editCourse: review.course.name,
-            editContent: review.comment,
-            editRating: review.rating
-        });
-        setShowEditModal(true);
-    };
-
+    //---------------------------------------------------------------------------------------------------------------------------------
+    
+    
+    //-------------------------------------------------ระบบดาว-------------------------------------------------------------------------
+    //ระบบคะแนนดาว
     const StarRating = ({ rating, setRating }: StarRatingProps) => {
         return (
             <div className="flex space-x-1">
@@ -101,13 +97,13 @@ export default function Page() {
         setDataEdit({ ...dataEdit, editRating: value });
     };
 
-    console.log(newReview.newRating);
+    //----------------------------------------------------------------------------------------------------------------------------
 
-    console.log(session?.user.id);
 
+
+    //-----------------------------ดึงข้อมูลจากDatabase-------------------------------------------
     // fatchdata
     const fetchReview = async () => {
-        //cheak session user id
         if (!session?.user?.id) {
             console.warn("Session is not ready or does not have a user ID.");
             return;
@@ -121,18 +117,18 @@ export default function Page() {
             console.error("❌ Error occurred while fetching reviews:", error);
         }
     };
-
+    //ดึงข้อมูลรายวิชาทั้งหมด
     const fetchAllcourse = async () => {
         try {
             const response = await axios.get<Course[]>("/api/course");
             setallCourse(response.data);
-            // console.log(allCourse);
-
         } catch (error) {
             console.error("❌ Error occurred while fetching reviews:", error);
         }
     };
+    //----------------------------------------------------------------------------------------
 
+    //ลบ รีวิวที่ต้องการจาก id review
     const handleDelete = async (Id: string) => {
         try {
             if (!session?.user?.id) {
@@ -146,7 +142,9 @@ export default function Page() {
             console.error(" Error deleting the review: ", error);
         }
     }
-
+    
+    //----------------------------------------จัดการแทบค้นหารายวิชา---------------------------------------------
+    //มีการพิมในช่องค้นหารายวิชา
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewReview(prevState => ({ ...prevState, [name]: value }));
@@ -166,12 +164,29 @@ export default function Page() {
             }
         }
     };
-
+    //กดเลือกรายวิชา
     const handleSelect = (courseName: string) => {
         setNewReview(prevState => ({ ...prevState, newNameCourse: courseName }));
         setSuggestions([]);
     }
+    //----------------------------------------------------------------------------------------------------------
 
+    
+
+    //---------------------------------แก้ไขข้อมูล รีวิว------------------------------------------------------------
+    
+    //เตรียมข้อมูลสำหรับหน้าแก้ไขreview
+    const handleEditModal = (review: Review) => {
+        setDataEdit({
+            editCourseId: review.id,
+            editCourse: review.course.name,
+            editContent: review.comment,
+            editRating: review.rating
+        });
+        //ทำให้เป็น true เพื่อแสดงpop up แก้ไมข้อมูล
+        setShowEditModal(true);
+    };
+    //เตรียมข้อมูลที่ผ่านการแก้ไข
     const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setDataEdit((prev) => ({
@@ -179,8 +194,8 @@ export default function Page() {
             [name]: name === "editRating" ? Number(value) : value,
         }));
     }
-
-    const handleSubmitEdit = async (id: string) => {
+    //กดยืนยันการแก้ไข
+    const handleSubmitEdit  = async (id: string) => {
         try {
             if (!session?.user?.id) {
                 console.warn("Session is not ready or does not have a user ID.");
@@ -199,6 +214,7 @@ export default function Page() {
                 comment: dataEdit.editContent
             });
 
+            //fetch data again
             fetchReview();
             setShowEditModal(false);
             setDataEdit({
@@ -212,26 +228,17 @@ export default function Page() {
             console.error("Error updating the review: ", error);
         }
     };
-
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/signin");
-        } else if (status === "authenticated" && session?.user?.id) {
-            console.log("Fetching reviews...");
-            fetchAllcourse();
-            fetchReview();
-        }
-    }, [status, session?.user?.id]);
-
+    //-----------------------------------------------------------------------------------------------
+    
+    //กดยืนยันเพิ่มรีวิว
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        
         if (!session?.user?.id) {
             console.warn("Session is not ready or does not have a user ID.");
             return;
         }
-
+        
         try {
             if (Number(newReview.newRating) > 5) {
                 newReview.newRating = 5;
@@ -244,7 +251,7 @@ export default function Page() {
                 rating: Number(newReview.newRating),
                 content: newReview.newContent,
             });
-
+            
             setShowModal(true);
             setCountdown(3);
             setNewReview({
@@ -269,10 +276,23 @@ export default function Page() {
             console.error("Error saving the review: ", error);
         }
     }
+
+    useEffect(() => {
+        if (status === "loading") return;
+        if (status === "unauthenticated") {
+            router.push("/signin");
+        } else if (status === "authenticated" && session?.user?.id) {
+            console.log("Fetching reviews...");
+            //ดึงข้อมูลรายวิชา และ รีวิว
+            fetchAllcourse();
+            fetchReview();
+        }
+    }, [status, session?.user?.id]);
+
     return (
         status === 'authenticated' &&
         session?.user && (
-            <div className=" mt-1 bg-white p-8 max-w-4xl mx-auto rounded-lg">
+            <div className=" mt-20 bg-white p-8 max-w-4xl mx-auto rounded-lg">
 
                 {/* input form */}
                 <div className="max-w-4xl mx-auto  p-6 bg-gray-900 shadow-lg rounded-lg text-white">
@@ -289,6 +309,7 @@ export default function Page() {
                                 value={newReview.newNameCourse}
                                 onChange={handleChange}
                             />
+                            {/* แสดงการค้นหารายวิชา */}
                             {suggestions.length > 0 && (
                                 <ul className="absolute left-0 w-full bg-white border border-blue-700 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto z-10 mt-2">
                                     {suggestions.map((course: Course) => (
@@ -358,6 +379,7 @@ export default function Page() {
                                     minute: '2-digit',
                                 })}
                             </p>
+
                             <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                 โดย {review.user?.name || 'unknown user'}
                             </span>

@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
     try {
-        const { userId } = params;
+        const { userId } = await params;
         const user_id = parseInt(userId);
 
         if (isNaN(user_id)) {
@@ -55,3 +55,4 @@ export async function PUT(request: NextRequest, { params }: { params: { userId: 
         await prisma.$disconnect();
     }
 }
+
