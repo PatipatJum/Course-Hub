@@ -16,8 +16,9 @@ export default function LeftsideNavbar() {
     }
 
     const handleSignOut = async () => {
+        toggleSidebar();
+        await new Promise(resolve => setTimeout(resolve, 150));
         await signOut({ redirect: false });
-        toggleSidebar()
         router.push("/signin");
     };
 

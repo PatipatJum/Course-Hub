@@ -21,6 +21,7 @@ interface Review {
 }
 
 export default function ProfilePage() {
+  //----------------------------------------State Management with useState--------------
   const searchParams = useSearchParams();
   const userId = searchParams.get("id");
   const { data: session, status } = useSession();
@@ -33,6 +34,7 @@ export default function ProfilePage() {
   const [showPopup, setShowPopup] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [loading, setLoading] = useState(true);
+  //------------------------------------------------------------------------------------
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -44,6 +46,7 @@ export default function ProfilePage() {
     }
   }, [status, userId]);
 
+  //-----------------------------------ดึงข้อมูลDB---------------------------------------------
   const loadProfileData = async () => {
     setLoading(true);
     try {
@@ -56,7 +59,7 @@ export default function ProfilePage() {
       setLoading(false);
     }
   };
-
+  //ดึงข้อมูลuser
   const fetchUserData = async () => {
     if (!userId) return;
     try {
@@ -68,7 +71,7 @@ export default function ProfilePage() {
       console.error("Error fetching user data:", error);
     }
   };
-
+  //ดึงข้อมูลreviewของuser
   const fetchReviews = async () => {
     if (!userId) return;
     try {
@@ -78,7 +81,10 @@ export default function ProfilePage() {
       console.error("Error fetching reviews:", error);
     }
   };
+  //-----------------------------------------------------------------------------------------
 
+
+  //แก้ไขโปรไฟล์ 
   const updateProfile = async () => {
     if (!userId || !userEdit) return;
     try {
@@ -93,13 +99,14 @@ export default function ProfilePage() {
     }
   };
 
+
   const handleImageError = () => {
     setImageError(true);
   };
+  //กำหนดรูปโปรไฟล์userเริ่มต้น
+  const defaultImage = "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
 
-  const defaultImage =
-    "https://www.worldsbestcatlitter.com/wp-content/uploads/2019/12/02_coughing-cat-meme.jpg";
-    
+  //หน้ารอโหลดข้อมูล
   if (status === "loading" || loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] ">
@@ -115,7 +122,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-3xl mx-auto p-6 mt-20 bg-white shadow-lg rounded-lg">
+      {/* แสดงหน้าProfile user */}
       {userData ? (
         <div className="flex flex-col items-center space-y-4">
           <img
@@ -125,6 +133,7 @@ export default function ProfilePage() {
             onError={handleImageError}
           />
           <h1 className="text-2xl font-bold text-black">ชื่อ: {userData.name}</h1>
+          {/* ถ้าเป็นProfile ของตัวเองสามารแก้ไขได้ */}
           {myProfile && (
             <button
               onClick={() => setShowPopup(true)}
@@ -137,7 +146,7 @@ export default function ProfilePage() {
       ) : (
         <p className="text-gray-500 text-center">ไม่พบข้อมูลผู้ใช้</p>
       )}
-
+      {/* แสดงPop up หน้าแก้ไขโปรไฟล์ */}
       {showPopup && (
         <div className="text-black fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -182,6 +191,7 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* แสดงรีวิวตั้งหมด */}
       <div className="mt-6 mb-4 flex items-center space-x-2">
         <span className="text-2xl font-semibold text-black">📝 รีวิวทั้งหมด:</span>
         <span className="text-2xl font-bold text-blue-600">{reviews.length}</span>
@@ -201,6 +211,16 @@ export default function ProfilePage() {
                 </div>
               </div>
               <p className="mt-2 text-gray-700">{review.comment}</p>
+              <p className="text-sm text-gray-500">
+                รีวิวเมื่อ{' '}
+                {new Date(review.createdAt).toLocaleDateString('th-TH', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
             </li>
           ))}
         </ul>

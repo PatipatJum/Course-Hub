@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import * as bcrypt from "bcryptjs"; // ป้องกัน TS error
+import * as bcrypt from "bcryptjs"; 
 import { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
@@ -79,16 +79,16 @@ export const authOptions: AuthOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        token.id = Number(user.id); // 🔥 แปลง id เป็น Number (ให้ตรงกับ Prisma)
-        token.picture = user.image; // ✅ เพิ่ม image เข้า token
+        token.id = Number(user.id); // แปลง id เป็น Number (ให้ตรงกับ Prisma)
+        token.picture = user.image; // เพิ่ม image เข้า token
       }
       return token;
     },
     
     session: async ({ session, token }) => {
       if (session.user) {
-        session.user.id = String(token.id); // 🔥 แปลง id กลับเป็น String
-        session.user.image = token.picture; // ✅ เพิ่ม image เข้า session
+        session.user.id = String(token.id); //แปลง id กลับเป็น String
+        session.user.image = token.picture; //เพิ่ม image เข้า session
       }
       return session;
     },

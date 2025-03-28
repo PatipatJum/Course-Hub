@@ -24,6 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
                 id: true,
                 comment: true,
                 rating: true,
+                createdAt: true,
                 user: {
                     select:{
                         name: true,

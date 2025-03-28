@@ -26,7 +26,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // ✅ เรียก getServerSession ภายในฟังก์ชัน async
   const session = await getServerSession(authOptions);
 
   return (
@@ -36,7 +35,7 @@ export default async function RootLayout({
           <SidebarProvider>
             <Navbar />
             <LeftsideNavbar />
-            <main className="transition-all duration-300 pt-16">
+            <main className="transition-all duration-300">
               {children}
             </main>
           </SidebarProvider>
